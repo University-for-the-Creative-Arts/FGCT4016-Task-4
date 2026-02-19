@@ -1,48 +1,47 @@
-# FGCT4016 Task 1 'Reflection System'
+# FGCT4016 Task 2 'Gameplay Hooks'
 
 ## 1. Introduction
 
-The task outlined was to create an Unreal Engine 5 project using C++ that uses its blueprint reflection system to have a class have a reflected function and/or function. The approach used was to create a class that derives itself from AActor, the base class for 'physical' objects in Unreal Engine 5. Then a function was made that was blueprint callable that would output a text message when called. This task is necessary to do due to most aspects of game development deriving from skills learnt in from task, especially since creating functions, variables etc... that can be accessed in the editor streamlines the work flow for game designers to focus on tweaking and balancing rather than wrapping their head around complex code systems. On top of that, relying on C++ instead of blueprints allows for greater freedom in terms of what can be done in Unreal instead of working around complex context-dependent blueprint nodes. From a programmer's perspective, working with raw code along with blueprints is useful as smaller tasks for a game can simply be programmed with blueprints, while complex systems can be done with code.
+The task outlined was to create an Unreal Engine 5 project using C++ that has an AActor that has logic for at least three lifecycle functions, and for the actor to be spawned in runtime rather than it being placed in the editor. The approach used was to reuse the previous task to speed up development time as already the previous task used one of the life cycle functions, and then to add additional logic to each of the lifecycle functions. Then, create a new class that spawns an actor with no rotation at the center point of the axis, which can then be selected in the editor to be the desired actor to spawn. This is important to learn as not only can this logic be used to spawn enemies, projectiles or equipable items, it is also useful as its directly making widgets pop-up in the editor for designers to use.
 
 ## 2. Implementation
 
-The project first began with the blank template from Unreal as the starting point, to ensure proper learning of creating content in Unreal Engine 5 without pre-existing objects.
+The project began with creating a new class; `SpawnActor`, to be placed in the world to be a 'spawner' of some sort.
 
-Then, a class that inherits from `AActor `was created. This was to allow for future proofing, as it can be placed on the world for future revisions of this Task
+Then, code was added to `SpawnActor.cpp` and `SpawnActor.h` to create the logic necessary. Using the `GetWorld()` function, it checks if there is a valid TestActor class set in the editor and if the world itself is valid with `isValid()`. It then spawns the actor at `(0x,0y,0z)` with no rotation or transform by calling `SpawnActor` on the world to create an instance of `TestActor`. In `SpawnActor.h`, it makes `TestActor` in the code variable by allowing subclasses of `TestActor` to be used, rather than the class in specific.
 
-Then, a function called `Greeting` was created and had code attached to make it write text on the screen of the game when the function was called. `Greeting` is made to be `BluePrintCallable` to ensure it can be used in the editor.
+![Alt text](./gitimages/h.png "spawnactor.h")
 
-`public:
-	UFUNCTION(BlueprintCallable)
-	virtual void Greeting();
-`
-[ Figure 1. TestActor.h's code declaring `Greeting`  .]
+[ Figure 1. SpawnActor.h  .]
 
-`void ATestActor::Greeting()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Hello there!"));
-}`
+![Alt text](./gitimages/cpp.png "spawnactor.cpp")
 
+[ Figure 2. SpawnActor.cpp  .]
 
-[ Figure 2. TestActor.cpp's code of the function `Greeting`  .]
+![Alt text](./gitimages/spawn.png "spawnactor.cpp")
 
-Then after writing the code that writes to the screen, to test if it is blueprint callable, it was called within the level's event tick, rather than `TestActor`'s itself, since `TestActor` isn't a blueprint class, so it does not have it's own blueprint. A copy of `TestActor` turned into a blueprint is possible, but any changes to `TestActor` would warrant having to reduplicate `TestActor` in future versions of the project.
+[ Figure 3. SpawnActor in the editor.]
 
-![Alt text](./gitimages/blueprint.png "blueprint")
+`TestActor` was then modified from the previous task to output text by using the following functions: `OnConstruction()`,`BeginPlay()`, and `Tick()`
 
-[ Figure 3. The Level Blueprint calling `Greeting` per tick  .]
+![Alt text](./gitimages/Ah.png "TestActor.h")
 
-![Alt text](./gitimages/ingame.png "ingame")
-[ Figure 4. Ingame screenshot of 'Hello There!' being written per tick on screen  .]
+[ Figure 4. TestActor.h  .]
+
+![Alt text](./gitimages/Acpp.png "TestActor.cpp")
+
+[ Figure 5. TestActor.cpp  .]
 
 ## 3. Outcome
 
-The project now functions where once the player loads in the to the level, per tick, a message on the screen appears displaying 'Hello there!'. This meets the task requirements are there is a class with a reflected function to blueprints, and to demonstrate said function in use, it has logic behind it and its being called by the level to test if the function works. 
+The outcome of the task was a system where you have a 'spawner' class that ca be placed into the world, and then spawn an instance of TestActor, or a subclass of it. This can allow for TestActor to be transformed into various types of different actors. Perhaps an enemy and its variants, or  multiple types of collectable items. And once the actor is spawned, it has code that executes on multiple different stages of its lifecycle. The text can be changed to be behavior if this were an actual game rather than c++ tasks. 
 
 ### 3.1 Video Demonstration
+
+https://www.youtube.com/watch?v=gpZRsOnCEwk
 
 ## 4. Bibliography
 
 ## 5. AI Use Declaration
 
-The Epic Developer Assistant for Unreal Engine was used to figure out the function to output text to the screen, that being `AddOnScreenDebugMessage()`, as it is much more convenient for quick testing than outputting to the console since the initializing the game has a lot of text to scroll before the game even runs.
+The Epic Developer Assistant for Unreal Engine was used to figure out how to spawn the actor. The functions necessary were known but it took a long time to figure out how to put it together, so the use of the AI assistant sped up the process.
