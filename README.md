@@ -1,47 +1,60 @@
-# FGCT4016 Task 2 'Gameplay Hooks'
+# FGCT4016 Task 5 'World Interaction and Components'
 
 ## 1. Introduction
 
-The task outlined was to create an Unreal Engine 5 project using C++ that has an AActor that has logic for at least three lifecycle functions, and for the actor to be spawned in runtime rather than it being placed in the editor. The approach used was to reuse the previous task to speed up development time as already the previous task used one of the life cycle functions, and then to add additional logic to each of the lifecycle functions. Then, create a new class that spawns an actor with no rotation at the center point of the axis, which can then be selected in the editor to be the desired actor to spawn. This is important to learn as not only can this logic be used to spawn enemies, projectiles or equipable items, it is also useful as its directly making widgets pop-up in the editor for designers to use.
+The task outlined was to create an Unreal Engine 5 project using C++ that has an interaction system that is modular, extensible and uses a line trace or an overlap as the trigger. The project must have a clear separation between interactable, and interactor, and should use an interface. The importance of using an interface and thus making the system modular allows for quick reuse of the trigger to be applied to separate classes. This can be used for item pick ups, health packs, enemy interaction with environments, players interacting with world elements.
 
 ## 2. Implementation
 
-The project began with creating a new class; `SpawnActor`, to be placed in the world to be a 'spawner' of some sort.
+First, an interact interface was made. These scripts do not actually have any code in them, but simply act as a hub for key variables and functions such as `canInteract`, `interactor` and `interact`
 
-Then, code was added to `SpawnActor.cpp` and `SpawnActor.h` to create the logic necessary. Using the `GetWorld()` function, it checks if there is a valid TestActor class set in the editor and if the world itself is valid with `isValid()`. It then spawns the actor at `(0x,0y,0z)` with no rotation or transform by calling `SpawnActor` on the world to create an instance of `TestActor`. In `SpawnActor.h`, it makes `TestActor` in the code variable by allowing subclasses of `TestActor` to be used, rather than the class in specific.
+![Alt text](./gitimages/ih.png "InteractionInterface.h")
 
-![Alt text](./gitimages/h.png "spawnactor.h")
+[ Figure 1. InteractionInterface.h  .]
 
-[ Figure 1. SpawnActor.h  .]
+![Alt text](./gitimages/icpp.png "InteractionInterface.cpp")
 
-![Alt text](./gitimages/cpp.png "spawnactor.cpp")
+[ Figure 2. InteractionInterface.cpp  .]
 
-[ Figure 2. SpawnActor.cpp  .]
 
-![Alt text](./gitimages/spawn.png "spawnactor.cpp")
+Then, the logic for the interactable actor and the interactor actor were made. What is relevant to the interaction system is the `sphereCollision` lines and `OnOverlapBegin` function. How `OnOverlapBegin` begin works is by checking for an actor that collides with it, and if said actor can be interacted with, it executes the code from the interface in that actor.
 
-[ Figure 3. SpawnActor in the editor.]
-
-`TestActor` was then modified from the previous task to output text by using the following functions: `OnConstruction()`,`BeginPlay()`, and `Tick()`
 
 ![Alt text](./gitimages/Ah.png "TestActor.h")
 
-[ Figure 4. TestActor.h  .]
+[ Figure 3. TestActor.h  .]
 
 ![Alt text](./gitimages/Acpp.png "TestActor.cpp")
 
-[ Figure 5. TestActor.cpp  .]
+[ Figure 4. TestActor.cpp  .]
+
+The interactable actor then has a print string that executes when the interact interface is called
+
+![Alt text](./gitimages/h.png "InteractableActor.h")
+
+[ Figure 5. InteractableActor.h  .]
+
+![Alt text](./gitimages/cpp.png "InteractableActor.cpp")
+
+[ Figure 6. InteractableActor.cpp  .]
+
+Then to show it work when they collide, the C++ classes were turned into blueprints, placed in the map, and the interactable actor was given projectile movement to make it move into the hitbox in real time
+
+![Alt text](./gitimages/component.png "projectile component")
+
+[ Figure 7. Projectile Movement on the blueprint class of InteractableActor.]
+
+
+
 
 ## 3. Outcome
 
-The outcome of the task was a system where you have a 'spawner' class that ca be placed into the world, and then spawn an instance of TestActor, or a subclass of it. This can allow for TestActor to be transformed into various types of different actors. Perhaps an enemy and its variants, or  multiple types of collectable items. And once the actor is spawned, it has code that executes on multiple different stages of its lifecycle. The text can be changed to be behavior if this were an actual game rather than c++ tasks. 
+The outcome of the task is an actor that has the ability to trigger code once it overlaps with the hitbox of another actor, using an interface to do so. It does so by having an actor with an overlap function that checks for incoming actors that collide with the actor's hitbox, and then said incoming actors, if they have the interact function, it executes a print string. This system can be expanded to allow for the player itself to interact with things, or the actors can be given logic to act as entities such as enemies.
 
 ### 3.1 Video Demonstration
 
-https://www.youtube.com/watch?v=gpZRsOnCEwk
+https://youtu.be/w8JP7-9zfVY
 
-## 4. Bibliography
-
-## 5. AI Use Declaration
+## 4. AI Use Declaration
 
 The Epic Developer Assistant for Unreal Engine was used to figure out how to spawn the actor. The functions necessary were known but it took a long time to figure out how to put it together, so the use of the AI assistant sped up the process.
