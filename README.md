@@ -57,4 +57,4 @@ https://youtu.be/w8JP7-9zfVY
 
 ## 4. AI Use Declaration
 
-The Epic Developer Assistant for Unreal Engine was used to figure out how to spawn the actor. The functions necessary were known but it took a long time to figure out how to put it together, so the use of the AI assistant sped up the process.
+No AI was used for this task.
